@@ -1,0 +1,16 @@
+{
+  "builds": [
+    {
+      "name": "azure-arm",
+      "builder_type": "azure-arm",
+      "build_time": 1634645225,
+      "files": null,
+      "artifact_id": "/subscriptions/93ab47bf-076c-43e0-9d6c-7c34fe77152a/resourceGroups/Clarium-resources/providers/Microsoft.Compute/images/lab-1634644042",
+      "packer_run_uuid": "7f8bf574-134c-5556-8f6e-6c119907e4e4",
+      "custom_data": {
+        "my_custom_data": "example"
+      }
+    }
+  ],
+  "last_run_uuid": "7f8bf574-134c-5556-8f6e-6c119907e4e4"
+}

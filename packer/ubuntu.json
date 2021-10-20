@@ -1,0 +1,84 @@
+{
+    "variables": {
+        "tenant_id": "{{env `ARM_TENANT_ID`}}",
+        "subscription_id": "{{env `ARM_SUBSCRIPTION_ID`}}",
+        "client_id": "{{env `ARM_CLIENT_ID`}}",
+        "client_secret": "{{env `ARM_CLIENT_SECRET`}}",
+        "resource_group": "{{env `ARM_RESOURCE_GROUP`}}",
+        "location": "{{env `ARM_LOCATION`}}",
+        "vm_size": "{{env `ARM_VM_SIZE`}}"
+    },
+    "builders": [
+        {
+            "type": "azure-arm",
+            "client_id": "{{user `client_id`}}",
+            "client_secret": "{{user `client_secret`}}",
+            "subscription_id": "{{user `subscription_id`}}",
+            "tenant_id": "{{user `tenant_id`}}",
+
+            "image_publisher": "Canonical",
+            "image_offer": "UbuntuServer",
+            "image_sku": "18.04-LTS",
+
+            "managed_image_resource_group_name": "{{user `resource_group`}}",
+            "managed_image_name": "Golden_Image-{{timestamp}}",
+            "location": "{{user `location`}}",
+            "vm_size": "{{user `vm_size`}}",
+            "os_type": "Linux",
+            "azure_tags": {
+                "owner": "Bharath",
+                "department": "Devops",
+                "application": "webapp",
+                "managed_by": "ansible",
+                "os": "ubuntu",
+                "platform": "linux"
+            },
+
+            "shared_image_gallery_destination": {
+                "resource_group": "{{user `resource_group`}}",
+                "gallery_name": "Clariun_image_gallery",
+                "image_name": "Clarium-image",
+                "image_version": "1.0.0",
+                "replication_regions": [
+                    "westeurope",
+                    "Eastus"
+                ]
+            }
+        }
+    ],
+
+    "_comment": "Running Ansible roles on the image",
+    "provisioners": [
+      {
+        "type": "shell",
+        "script": "scripts/ansible.sh"
+      },
+      {
+        "type": "ansible-local",
+        "playbook_file": "../ansible/site.yml",
+        "role_paths": [
+          "../ansible/roles/git",
+          "../ansible/roles/nginx"
+        ],
+        "group_vars": "../ansible/group_vars"
+      },
+      {
+        "type": "shell",
+        "script": "scripts/cleanup.sh"
+      }
+    ],
+      
+    "post-processors": [
+        [
+          {
+            "type": "manifest",
+            "strip_path": true,
+            "strip_time": true,
+            "output": "manifest.json",
+            "custom_data": {
+              "my_custom_data": "example"
+            }
+          }
+        ]
+      ]    
+    }

@@ -1,0 +1,8 @@
+---
+- name: Install Git and Nginx
+  hosts: all
+  become: yes
+
+  roles:
+    - git
+    - nginx
